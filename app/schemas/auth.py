@@ -10,3 +10,8 @@ class TokenResponse(BaseModel):
     
 class RefreshRequest(BaseModel):
     refresh: str
+    
+class UserCreate(BaseModel):
+    username: str
+    email: EmailStr
+    password: str
