@@ -6,7 +6,7 @@ class Settings(BaseSettings):
 
     DEBUG: bool = False
 
-    DATABASE_URL: str
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost/fast_chat"
 
     REDIS_URL: str
 

@@ -40,7 +40,7 @@ async def register(data: UserCreate, db: AsyncSession=Depends(get_db),):
     if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Username already taken")
     
-    user=User(usrname=data.username, email=data.email, hashed_password=hash_password(data.password),)
+    user=User(username=data.username, email=data.email, hashed_password=hash_password(data.password),)
     db.add(user)
     
     await db.commit()

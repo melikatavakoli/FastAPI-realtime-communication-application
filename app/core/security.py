@@ -4,7 +4,11 @@ from passlib.context import CryptContext
 
 from app.core.config import settings
 
-pwd_context=CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context=CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto",
+    truncate_error=True
+)
 ALGORITHM=settings.JWT_ALGORITHM
 
 def hash_password(password:str)->str:
@@ -13,7 +17,7 @@ def hash_password(password:str)->str:
 def verify_password(password: str, hashed: str)->bool:
     return pwd_context.verify(password, hashed)
 
-def create_acccess_token(subject: str):
+def create_access_token(subject: str):
     expire=datetime.now(timezone.utc)+timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     payload={
         "sub": subject,

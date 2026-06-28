@@ -1,16 +1,20 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from datetime import datetime
-
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.chat import Chat
+    from app.models.user import User    
+    
 from app.models.base import GenericModel
-from app.models.chat import Chat
-from app.models.user import User
 
 
 class Membership(GenericModel):
     __tablename__ = 'chat_memberships'
-    user_id: Mapped[str] = mapped_column(Integer, ForeignKey('users.id'), nullable=False)
-    chat_id: Mapped[str] = mapped_column(Integer, ForeignKey('chats.id'), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
+    chat_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('chats.id'), nullable=False)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     is_muted: Mapped[bool] = mapped_column(Boolean, default=False)
     is_banned: Mapped[bool] = mapped_column(Boolean, default=False)

@@ -1,7 +1,8 @@
-from profile import Profile
-
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import mapped_column, relationship, Mapped
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.profile import Profile
 
 from app.models.base import GenericModel
 
