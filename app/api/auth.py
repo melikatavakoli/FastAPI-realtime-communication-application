@@ -8,7 +8,6 @@ from fastapi.security import (
 )
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.core.security import (
@@ -24,6 +23,7 @@ from app.schemas.auth import (
     RefreshRequest,
     UserCreate,
     TokenResponse,
+    UserUpdate,
 )
 
 
@@ -34,13 +34,22 @@ async def register(data: UserCreate, db: AsyncSession=Depends(get_db),):
     
     result=await db.execute(select(User).where(User.email==data.email))
     if result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(
+            status_code=400, 
+            detail="Email already registered")
     
     result=await db.execute(select(User).where(User.username==data.username))
     if result.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail="Username already taken")
+        raise HTTPException(
+            status_code=400, 
+            detail="Username already taken",
+            )
     
-    user=User(username=data.username, email=data.email, hashed_password=hash_password(data.password),)
+    user=User(
+        username=data.username, 
+        email=data.email, 
+        hashed_password=hash_password(data.password),
+        )
     db.add(user)
     
     await db.commit()
@@ -93,3 +102,25 @@ async def profile(current_user: User=Depends(get_current_user)):
 @router.get("/me")
 async def me(current_user: User=Depends(get_current_user)):
     return current_user
+
+@router.patch("/profile")
+async def update_profile(
+    data: UserUpdate,
+    db: AsyncSession=Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    update_data=data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(current_user, field, value)
+        
+    await db.commit()
+    await db.refresh(current_user)
+    
+    return {
+        "id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "first_name": current_user.first_name,
+        "last_name": current_user.last_name,
+        "is_active": current_user.is_active,        
+    }
