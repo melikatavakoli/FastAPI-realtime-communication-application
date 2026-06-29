@@ -1,5 +1,6 @@
-from sqlalchemy import String, Boolean
+from sqlalchemy import String, Boolean, DateTime
 from sqlalchemy.orm import mapped_column, relationship, Mapped
+from datetime import datetime
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.models.profile import Profile
@@ -21,4 +22,9 @@ class User(GenericModel):
         "Profile",
         back_populates="user",
         uselist=False
+    )
+    reset_code: Mapped[int | None] = mapped_column(nullable=True)
+    reset_code_expire: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
     )
