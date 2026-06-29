@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,7 +26,7 @@ async def get_current_user(
             detail="Invalid access token",
         )
 
-    user = await db.get(User, int(payload["sub"]))
+    user = await db.get(User, UUID(payload["sub"]))
 
     if user is None:
         raise HTTPException(
