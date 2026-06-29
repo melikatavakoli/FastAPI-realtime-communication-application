@@ -21,5 +21,11 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-
+    # SMTP EMAIL SETTINGS
+    MAIL_SERVER: str = "smtp.gmail.com"
+    MAIL_PORT: int = 587
+    MAIL_USERNAME: str
+    MAIL_PASSWORD: str
+    MAIL_FROM: str | None = None
+    
 settings = Settings()

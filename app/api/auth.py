@@ -157,14 +157,14 @@ async def forget_password(data: ForgotPasswordRequest, db: AsyncSession=Depends(
         raise HTTPException(status_code=404, detail="user not found")
     code=randint(1900, 9999)
     user.reset_code=code
-    user.reset_code_expire=(datetime.now(timezone.utc)+timedelta(minute=5))
+    user.reset_code_expire=(datetime.now(timezone.utc)+timedelta(minutes=5))
     await db.commit()
-    await send_email(user.email, f"your verification code is {code}")
+    await send_email(user.email,"Password Reset Code", f"your verification code is {code}")
     return{"message":"verification code sent"}
 
 
 @router.post("/reset-password")
-async def reset_password(data: ResetPasswordRequest, db: AsyncSession=Depends(get_db))
+async def reset_password(data: ResetPasswordRequest, db: AsyncSession=Depends(get_db)):
     result=await db.execute(select(User).where(User.email==data.email))
     user=result.scalar_one_or_none()
     if user is None:
