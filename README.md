@@ -38,11 +38,6 @@ Features and structure may change over time.
 - 🧩 Modular design for future microservices migration
 
 ---
-📌 Notes
-
-This project is being actively developed and is not yet production-ready.
-
----
 
 ⭐ Support
 
