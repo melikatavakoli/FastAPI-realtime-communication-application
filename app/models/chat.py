@@ -1,8 +1,10 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, SQLEnum
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from typing import TYPE_CHECKING
+
+from app.utils.enums import ChatType
 if TYPE_CHECKING:
     from app.models.membership import Membership
     from app.models.user import User
@@ -20,7 +22,10 @@ class Chat(GenericModel):
     creator_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('users.id'),)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_private: Mapped[bool] = mapped_column(Boolean, default=True)
-    chat_type: Mapped[str] = mapped_column(String(50),)
+    chat_type: Mapped[ChatType | None] = mapped_column(
+        SQLEnum(ChatType),
+        nullable=True,
+    )
     description: Mapped[str | None] = mapped_column(String(500),)
     creator: Mapped["User"] = relationship("User", back_populates="chats")
     membership: Mapped["Membership"] = relationship("Membership", back_populates="chat", cascade="all, delete-orphan")

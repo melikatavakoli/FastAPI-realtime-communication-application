@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from uuid import UUID
 
-from app.utils.types import ChatType
+from app.utils.enums import ChatType
 
 class ChatCreateSchema(BaseModel):
     name: Optional[str] = None

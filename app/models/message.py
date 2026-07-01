@@ -1,8 +1,10 @@
-from sqlalchemy import Text, Boolean, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Text, Boolean, Integer, String, ForeignKey, DateTime, SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from typing import TYPE_CHECKING
+
+from app.utils.enums import MediaType
 if TYPE_CHECKING:
     from app.models.chat import Chat
     from app.models.membership import Membership
@@ -21,7 +23,10 @@ class Message(GenericModel):
     is_edited: Mapped[bool] = mapped_column(Boolean, default=False)
     can_forward: Mapped[bool] = mapped_column(Boolean, default=True)
     media_file: Mapped[str | None] = mapped_column(String,)
-    media_type: Mapped[str | None] = mapped_column(String(50),)
+    media_type: Mapped[MediaType | None] = mapped_column(
+        SQLEnum(MediaType),
+        nullable=True,
+    )
     emoji: Mapped[str | None] = mapped_column(String(50),)
     forwarded_from_user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey('users.id'),)
     forwarded_from_chat_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),ForeignKey('chats.id'),)
