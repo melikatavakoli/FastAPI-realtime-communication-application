@@ -25,6 +25,7 @@ class UserUpdate(BaseModel):
     email: EmailStr | None = None
     first_name: str | None = None
     last_name: str | None = None
+    is_staff: bool
 
 class ChangePassword(BaseModel):
     old_password: str = Field(min_length=8)
